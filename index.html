@@ -318,6 +318,13 @@
             margin-bottom: 10px;
         }
 
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            font-size: 1.2rem;
+        }
+
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 2rem;
@@ -344,236 +351,168 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <h1>🩺 NCLEX Practice</h1>
-            <p>Interactive Learning with Detailed Feedback</p>
-            <button class="restart-btn" onclick="restartQuiz()" style="margin-top: 15px; width: auto; padding: 10px 20px; font-size: 1rem;">
-                🔄 Restart Quiz
-            </button>
+        <!-- Loading Screen -->
+        <div class="loading" id="loading-screen">
+            <h2>🩺 Loading NCLEX Questions...</h2>
+            <p>Preparing 100+ practice questions for you!</p>
         </div>
 
-        <!-- Progress -->
-        <div class="progress-card">
-            <div class="progress-info">
-                <div>
-                    <strong>📊 Question <span id="current-q">1</span> of <span id="total-q">6</span></strong>
+        <!-- Main App (initially hidden) -->
+        <div id="main-app" class="hidden">
+            <!-- Header -->
+            <div class="header">
+                <h1>🩺 NCLEX Practice</h1>
+                <p>Interactive Learning with Detailed Feedback • <span id="total-questions">100+</span> Questions</p>
+                <button class="restart-btn" onclick="restartQuiz()" style="margin-top: 15px; width: auto; padding: 10px 20px; font-size: 1rem;">
+                    🔄 Restart Quiz
+                </button>
+            </div>
+
+            <!-- Progress -->
+            <div class="progress-card">
+                <div class="progress-info">
+                    <div>
+                        <strong>📊 Question <span id="current-q">1</span> of <span id="total-q">100</span></strong>
+                    </div>
+                    <div>
+                        <strong>🏆 Score: <span id="score">0/0</span> (<span id="percentage">0</span>%)</strong>
+                    </div>
+                    <div>
+                        <span class="badge" id="category">Loading...</span>
+                    </div>
                 </div>
-                <div>
-                    <strong>🏆 Score: <span id="score">0/0</span> (<span id="percentage">0</span>%)</strong>
-                </div>
-                <div>
-                    <span class="badge" id="category">Pharmacology</span>
-                </div>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progress-fill" style="width: 16.67%"></div>
-            </div>
-        </div>
-
-        <!-- Question -->
-        <div class="question-card">
-            <div class="question-header">
-                <div class="question-number" id="q-number">1</div>
-                <div class="question-text" id="question-text">Loading question...</div>
-            </div>
-
-            <div class="options" id="options-container">
-                <!-- Options will be inserted here -->
-            </div>
-
-            <button class="submit-btn" id="submit-btn" onclick="submitAnswer()">
-                Submit Answer
-            </button>
-        </div>
-
-        <!-- Feedback (initially hidden) -->
-        <div class="feedback-card hidden" id="feedback-card">
-            <div class="feedback-header" id="feedback-header">
-                <span class="emoji">✅</span> Correct! Well done!
-            </div>
-
-            <div class="explanations">
-                <h4 style="margin-bottom: 15px;">📝 Answer Explanations:</h4>
-                <div id="explanations-container">
-                    <!-- Explanations will be inserted here -->
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 1%"></div>
                 </div>
             </div>
 
-            <div class="rationale">
-                <h4><span class="emoji">📚</span>Detailed Rationale:</h4>
-                <p id="rationale-text">Rationale will appear here...</p>
+            <!-- Question -->
+            <div class="question-card">
+                <div class="question-header">
+                    <div class="question-number" id="q-number">1</div>
+                    <div class="question-text" id="question-text">Loading question...</div>
+                </div>
+
+                <div class="options" id="options-container">
+                    <!-- Options will be inserted here -->
+                </div>
+
+                <button class="submit-btn" id="submit-btn" onclick="submitAnswer()">
+                    Submit Answer
+                </button>
             </div>
 
-            <div class="categories">
-                <div class="category nursing-process">
-                    <h5>🎯 Nursing Process:</h5>
-                    <p id="nursing-process">Assessment</p>
+            <!-- Feedback (initially hidden) -->
+            <div class="feedback-card hidden" id="feedback-card">
+                <div class="feedback-header" id="feedback-header">
+                    <span class="emoji">✅</span> Correct! Well done!
                 </div>
-                <div class="category client-need">
-                    <h5>🏥 Client Need:</h5>
-                    <p id="client-need">Physiological Integrity</p>
+
+                <div class="explanations">
+                    <h4 style="margin-bottom: 15px;">📝 Answer Explanations:</h4>
+                    <div id="explanations-container">
+                        <!-- Explanations will be inserted here -->
+                    </div>
                 </div>
+
+                <div class="rationale">
+                    <h4><span class="emoji">📚</span>Detailed Rationale:</h4>
+                    <p id="rationale-text">Rationale will appear here...</p>
+                </div>
+
+                <div class="categories">
+                    <div class="category nursing-process">
+                        <h5>🎯 Nursing Process:</h5>
+                        <p id="nursing-process">Assessment</p>
+                    </div>
+                    <div class="category client-need">
+                        <h5>🏥 Client Need:</h5>
+                        <p id="client-need">Physiological Integrity</p>
+                    </div>
+                </div>
+
+                <button class="next-btn" id="next-btn" onclick="nextQuestion()">
+                    Next Question →
+                </button>
             </div>
 
-            <button class="next-btn" id="next-btn" onclick="nextQuestion()">
-                Next Question →
-            </button>
-        </div>
+            <!-- Completion Card -->
+            <div class="completion-card hidden" id="completion-card">
+                <h2 style="margin-bottom: 15px;">🎉 Quiz Complete!</h2>
+                <p style="font-size: 1.2rem; margin-bottom: 20px;">
+                    Final Score: <span id="final-score">0/0</span> (<span id="final-percentage">0</span>%)
+                </p>
+                <button class="restart-btn" onclick="restartQuiz()">
+                    🚀 Try Again
+                </button>
+            </div>
 
-        <!-- Completion Card -->
-        <div class="completion-card hidden" id="completion-card">
-            <h2 style="margin-bottom: 15px;">🎉 Quiz Complete!</h2>
-            <p style="font-size: 1.2rem; margin-bottom: 20px;">
-                Final Score: <span id="final-score">0/0</span> (<span id="final-percentage">0</span>%)
-            </p>
-            <button class="restart-btn" onclick="restartQuiz()">
-                🚀 Try Again
-            </button>
-        </div>
-
-        <!-- Footer -->
-        <div style="text-align: center; color: white; margin-top: 30px; opacity: 0.8;">
-            <p>💪 You've got this! Every question is a step closer to becoming an amazing nurse.</p>
+            <!-- Footer -->
+            <div style="text-align: center; color: white; margin-top: 30px; opacity: 0.8;">
+                <p>💪 You've got this! Every question is a step closer to becoming an amazing nurse.</p>
+            </div>
         </div>
     </div>
 
-    <script>
-        // Question bank
-        const questions = [
-            {
-                id: 1,
-                category: "Pharmacology",
-                question: "A client is receiving digoxin (Lanoxin) 0.25 mg PO daily. Before administering the medication, which assessment is most important for the nurse to perform?",
-                options: [
-                    "Check blood pressure",
-                    "Assess apical pulse for 1 full minute", 
-                    "Review recent lab values",
-                    "Evaluate respiratory rate"
-                ],
-                correct: 1,
-                explanations: [
-                    "While BP monitoring is important, it's not the priority before digoxin administration.",
-                    "✅ CORRECT: Digoxin affects heart rate and rhythm. The apical pulse must be assessed for 1 full minute before administration. Hold if HR <60 bpm in adults or notify provider per protocol.",
-                    "Lab values are important but the immediate priority is cardiac assessment before each dose.",
-                    "Respiratory rate, while part of vital signs, is not the priority assessment for digoxin."
-                ],
-                rationale: "Digoxin is a cardiac glycoside that can cause bradycardia and arrhythmias. The apical pulse is the most accurate way to assess heart rate and must be checked before each dose to ensure safe administration.",
-                nursingProcess: "Assessment",
-                clientNeed: "Physiological Integrity - Pharmacological Therapies"
-            },
-            {
-                id: 2,
-                category: "Medical-Surgical",
-                question: "A nurse is caring for a client with chronic heart failure. Which finding would indicate that the client's condition is worsening?",
-                options: [
-                    "Weight loss of 2 pounds over 3 days",
-                    "Decreased peripheral edema",
-                    "Weight gain of 3 pounds in 2 days",
-                    "Clear lung sounds"
-                ],
-                correct: 2,
-                explanations: [
-                    "Weight loss would indicate improvement in fluid retention, not worsening.",
-                    "Decreased peripheral edema indicates improvement in heart failure management.",
-                    "✅ CORRECT: Rapid weight gain (2-3 lbs in 24-48 hours) indicates fluid retention and worsening heart failure. This requires immediate intervention.",
-                    "Clear lung sounds indicate absence of pulmonary edema, which is a positive finding."
-                ],
-                rationale: "In heart failure, the heart's decreased pumping ability leads to fluid retention. Daily weights are the most sensitive indicator of fluid status changes. Rapid weight gain signals fluid accumulation before other symptoms appear.",
-                nursingProcess: "Assessment",
-                clientNeed: "Physiological Integrity - Physiological Adaptation"
-            },
-            {
-                id: 3,
-                category: "Pediatric Nursing",
-                question: "A 6-month-old infant is admitted with bronchiolitis. Which intervention should the nurse prioritize?",
-                options: [
-                    "Administering antibiotics as ordered",
-                    "Maintaining adequate hydration and monitoring respiratory status",
-                    "Teaching parents about medication administration",
-                    "Providing high-calorie formula"
-                ],
-                correct: 1,
-                explanations: [
-                    "Bronchiolitis is typically viral, so antibiotics are not the primary treatment unless secondary bacterial infection occurs.",
-                    "✅ CORRECT: Bronchiolitis causes airway inflammation and increased mucus production. Priority is maintaining airway patency and adequate hydration. Monitor for respiratory distress.",
-                    "While parent education is important, it's not the immediate priority during acute illness.",
-                    "Nutrition is important but respiratory support and hydration take priority in acute bronchiolitis."
-                ],
-                rationale: "Bronchiolitis primarily affects the small airways in infants. The priority is always airway and breathing (ABC's). Maintaining hydration helps thin secretions, and close respiratory monitoring allows for early intervention if distress occurs.",
-                nursingProcess: "Implementation",
-                clientNeed: "Physiological Integrity - Physiological Adaptation"
-            },
-            {
-                id: 4,
-                category: "Mental Health",
-                question: "A client with major depression tells the nurse, 'I don't think the medication is helping. I still feel hopeless.' What is the nurse's best response?",
-                options: [
-                    "You should be more positive about your treatment",
-                    "It takes time for antidepressants to work effectively",
-                    "I understand this is frustrating. Let's talk about what you're experiencing and discuss this with your provider",
-                    "Many people feel this way when starting treatment"
-                ],
-                correct: 2,
-                explanations: [
-                    "This dismisses the client's feelings and is not therapeutic communication.",
-                    "While true, this doesn't acknowledge the client's current distress or provide support.",
-                    "✅ CORRECT: This validates the client's feelings, encourages therapeutic communication, and involves the healthcare team in reassessing treatment effectiveness.",
-                    "This minimizes the client's individual experience and doesn't provide specific help."
-                ],
-                rationale: "Therapeutic communication involves active listening, validation of feelings, and collaborative problem-solving. The nurse should acknowledge the client's distress while facilitating communication with the provider about treatment effectiveness.",
-                nursingProcess: "Implementation", 
-                clientNeed: "Psychosocial Integrity"
-            },
-            {
-                id: 5,
-                category: "Maternal-Newborn",
-                question: "A postpartum client is breastfeeding her newborn. She reports sore, cracked nipples. What should the nurse recommend first?",
-                options: [
-                    "Switch to bottle feeding temporarily",
-                    "Apply lanolin cream after each feeding",
-                    "Check the baby's latch and positioning",
-                    "Limit feeding time to 10 minutes per side"
-                ],
-                correct: 2,
-                explanations: [
-                    "Switching to bottle feeding isn't necessary and could interfere with breastfeeding establishment.",
-                    "While lanolin can help, addressing the root cause (poor latch) is the priority.",
-                    "✅ CORRECT: Poor latch and positioning are the most common causes of nipple pain and damage. Correcting these addresses the root problem.",
-                    "Limiting feeding time doesn't address the underlying cause and may lead to inadequate nutrition for the baby."
-                ],
-                rationale: "Nipple pain during breastfeeding is usually caused by poor latch technique. The baby should have a wide, asymmetric latch with more areola visible above the lip than below. Correcting positioning prevents further damage and promotes healing.",
-                nursingProcess: "Implementation",
-                clientNeed: "Health Promotion and Maintenance"
-            },
-            {
-                id: 6,
-                category: "Fundamentals",
-                question: "A nurse is preparing to insert a urinary catheter. Which action demonstrates proper sterile technique?",
-                options: [
-                    "Opening the sterile package by pulling the corners outward",
-                    "Reaching across the sterile field to get supplies",
-                    "Using clean gloves throughout the procedure",
-                    "Cleaning the meatus with the same swab twice"
-                ],
-                correct: 0,
-                explanations: [
-                    "✅ CORRECT: Opening sterile packages by pulling corners outward prevents contamination of the sterile contents. Never reach over or across the sterile field.",
-                    "This would contaminate the sterile field. Never reach across a sterile area.",
-                    "Sterile gloves are required for catheter insertion, not just clean gloves.",
-                    "Each swab should only be used once, in a front-to-back motion, then discarded."
-                ],
-                rationale: "Sterile technique is essential for procedures that involve entering sterile body cavities. The principles include: maintaining a sterile field, using sterile supplies, and avoiding contamination through proper movements and handling.",
-                nursingProcess: "Implementation",
-                clientNeed: "Safe and Effective Care Environment - Safety and Infection Control"
-            }
-        ];
+    <!-- Load Question Banks -->
+    <script src="js/pharmacology.js"></script>
+    <script src="js/medical-surgical.js"></script>
+    <script src="js/pediatric.js"></script>
+    <script src="js/maternal-newborn.js"></script>
+    <script src="js/mental-health.js"></script>
+    <script src="js/fundamentals.js"></script>
+    <script src="js/community-health.js"></script>
+    <script src="js/leadership.js"></script>
 
-        // Quiz state
+    <script>
+        // Global variables
+        let allQuestions = [];
         let currentQuestionIndex = 0;
         let selectedAnswer = null;
         let showingFeedback = false;
         let score = { correct: 0, total: 0 };
+        let questionsLoaded = 0;
+        let totalQuestionFiles = 8; // Number of question files to load
+
+        // Initialize app once all questions are loaded
+        function checkAllQuestionsLoaded() {
+            questionsLoaded++;
+            if (questionsLoaded >= totalQuestionFiles) {
+                // Combine all questions and shuffle
+                allQuestions = [
+                    ...pharmacologyQuestions,
+                    ...medicalSurgicalQuestions,
+                    ...pediatricQuestions,
+                    ...maternalNewbornQuestions,
+                    ...mentalHealthQuestions,
+                    ...fundamentalsQuestions,
+                    ...communityHealthQuestions,
+                    ...leadershipQuestions
+                ];
+                
+                // Shuffle questions for variety
+                shuffleArray(allQuestions);
+                
+                // Update total count
+                document.getElementById('total-q').textContent = allQuestions.length;
+                document.getElementById('total-questions').textContent = allQuestions.length;
+                
+                // Hide loading, show app
+                document.getElementById('loading-screen').classList.add('hidden');
+                document.getElementById('main-app').classList.remove('hidden');
+                
+                // Initialize quiz
+                initQuiz();
+            }
+        }
+
+        // Shuffle array function
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
 
         // Initialize quiz
         function initQuiz() {
@@ -581,17 +520,16 @@
             selectedAnswer = null;
             showingFeedback = false;
             score = { correct: 0, total: 0 };
-            document.getElementById('total-q').textContent = questions.length;
             loadQuestion();
             updateProgress();
         }
 
         // Load current question
         function loadQuestion() {
-            const question = questions[currentQuestionIndex];
+            const question = allQuestions[currentQuestionIndex];
             
             document.getElementById('current-q').textContent = currentQuestionIndex + 1;
-            document.getElementById('q-number').textContent = question.id;
+            document.getElementById('q-number').textContent = currentQuestionIndex + 1;
             document.getElementById('question-text').textContent = question.question;
             document.getElementById('category').textContent = question.category;
             
@@ -641,7 +579,7 @@
         function submitAnswer() {
             if (selectedAnswer === null || showingFeedback) return;
             
-            const question = questions[currentQuestionIndex];
+            const question = allQuestions[currentQuestionIndex];
             const isCorrect = selectedAnswer === question.correct;
             
             // Update score
@@ -700,7 +638,7 @@
             
             // Show appropriate button
             const nextBtn = document.getElementById('next-btn');
-            if (currentQuestionIndex < questions.length - 1) {
+            if (currentQuestionIndex < allQuestions.length - 1) {
                 nextBtn.textContent = 'Next Question →';
                 nextBtn.onclick = nextQuestion;
             } else {
@@ -713,7 +651,7 @@
 
         // Next question
         function nextQuestion() {
-            if (currentQuestionIndex < questions.length - 1) {
+            if (currentQuestionIndex < allQuestions.length - 1) {
                 currentQuestionIndex++;
                 loadQuestion();
                 updateProgress();
@@ -733,21 +671,19 @@
 
         // Restart quiz
         function restartQuiz() {
+            shuffleArray(allQuestions); // Reshuffle for different order
             initQuiz();
         }
 
         // Update progress
         function updateProgress() {
             const percentage = score.total > 0 ? Math.round((score.correct / score.total) * 100) : 0;
-            const progressPercentage = ((currentQuestionIndex + 1) / questions.length) * 100;
+            const progressPercentage = ((currentQuestionIndex + 1) / allQuestions.length) * 100;
             
             document.getElementById('score').textContent = `${score.correct}/${score.total}`;
             document.getElementById('percentage').textContent = percentage;
             document.getElementById('progress-fill').style.width = progressPercentage + '%';
         }
-
-        // Start the quiz when page loads
-        window.onload = initQuiz;
     </script>
 </body>
 </html>
