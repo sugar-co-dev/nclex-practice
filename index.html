@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NCLEX Practice - Interactive Learning</title>
+    <title>NCLEX Practice</title>
     <style>
         * {
             margin: 0;
@@ -454,16 +454,6 @@
         </div>
     </div>
 
-    <!-- Load Question Banks -->
-    <script src="js/pharmacology.js"></script>
-    <script src="js/medical-surgical.js"></script>
-    <script src="js/pediatric.js"></script>
-    <script src="js/maternal-newborn.js"></script>
-    <script src="js/mental-health.js"></script>
-    <script src="js/fundamentals.js"></script>
-    <script src="js/community-health.js"></script>
-    <script src="js/leadership.js"></script>
-
     <script>
         // Global variables
         let allQuestions = [];
@@ -684,6 +674,17 @@
             document.getElementById('percentage').textContent = percentage;
             document.getElementById('progress-fill').style.width = progressPercentage + '%';
         }
+    </script>
+
+    <!-- Load Question Banks AFTER functions are defined -->
+    <script src="js/pharmacology.js"></script>
+    <script src="js/medical-surgical.js"></script>
+    <script src="js/pediatric.js"></script>
+    <script src="js/maternal-newborn.js"></script>
+    <script src="js/mental-health.js"></script>
+    <script src="js/fundamentals.js"></script>
+    <script src="js/community-health.js"></script>
+    <script src="js/leadership.js"></script>
     </script>
 </body>
 </html>
